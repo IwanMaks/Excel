@@ -2,6 +2,7 @@
  * Данный класс создан для возвращения компонентов в HTML формате внутрь div#app
  */
 import { $ } from "@core/dom";
+import { Emitter } from "@core/Emmiter";
 
 export class Excel {
   /**
@@ -14,6 +15,7 @@ export class Excel {
   constructor(selector, options) {
     this.$el = $(selector);
     this.components = options.components || [];
+    this.emitter = new Emitter();
   }
 
   /**
@@ -24,13 +26,13 @@ export class Excel {
   getRoot() {
     const $root = $.create("div", "excel");
 
+    const componentOptions = {
+      emitter: this.emitter,
+    };
+
     this.components = this.components.map((Component) => {
       const $el = $.create("div", Component.className);
-      const component = new Component($el);
-      // // DEBUG
-      // if (component.name) {
-      //   window["c" + component.name] = component;
-      // }
+      const component = new Component($el, componentOptions);
       $el.html(component.toHTML());
       $root.append($el);
       return component;
@@ -45,5 +47,9 @@ export class Excel {
   render() {
     this.$el.append(this.getRoot());
     this.components.forEach((component) => component.init());
+  }
+
+  destroy() {
+    this.components.forEach((component) => component.destroy());
   }
 }

@@ -20,15 +20,3 @@ export function createStore(rootReducer, initState = {}) {
     },
   };
 }
-
-// Class
-/*
-export class createStore {
-  const state = {}
-  const listeners = []
-
-  static subscribe(fn) {}
-  static dispatch() {}
-  static getState() {}
-}
- */

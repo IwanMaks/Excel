@@ -14,7 +14,8 @@
     "linebreak-style": "off",
     "operator-linebreak": "off",
     "indent": "off",
-    "space-before-function-paren": "off"
+    "space-before-function-paren": "off",
+    "no-invalid-this": "off"
   },
   "extends": ["eslint:recommended", "google"]
 }

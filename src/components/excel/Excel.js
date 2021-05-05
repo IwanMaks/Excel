@@ -4,17 +4,16 @@
 import { $ } from "@core/dom";
 import { Emitter } from "@core/Emmiter";
 import { StoreSubscriber } from "@core/StoreSubscriber";
+import { updateDate } from "@/redux/actions";
 
 export class Excel {
   /**
    * Конструктор создаёт локальные переменные.
    * $el - компонент, в который нужно вернуть HTML
    * components - набор компонентов, которые нужно отрендерить
-   * @param {string} selector Селектор родительского элемента, куда возвращается HTML
    * @param {Object} options Набор компонентов, которые необходимо конвертировать в HTML
    */
-  constructor(selector, options) {
-    this.$el = $(selector);
+  constructor(options) {
     this.components = options.components || [];
     this.store = options.store;
     this.emitter = new Emitter();
@@ -48,8 +47,13 @@ export class Excel {
    * Основной метод, который добавляет сформированный HTML в элемент,
    * селектор которого был передан в конструктор класса
    */
-  render() {
-    this.$el.append(this.getRoot());
+  init() {
+    if (process.env.NODE_ENV === "production") {
+      document.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+      });
+    }
+    this.store.dispatch(updateDate());
     this.subscriber.subscribeComponents(this.components);
     this.components.forEach((component) => component.init());
   }
@@ -57,5 +61,8 @@ export class Excel {
   destroy() {
     this.subscriber.unsubscribeFromStore();
     this.components.forEach((component) => component.destroy());
+    document.removeEventListener("contextmenu", (event) => {
+      event.preventDefault();
+    });
   }
 }
